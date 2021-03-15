@@ -6,7 +6,7 @@ image:
   tag: latest
 persistentVolume:
 # persistentVolume.storageClass - The kubernetes persistant storageClass    
-  storageClass: ebs-csi-driver
+  storageClass: sourcegraph
 ## Values to configure the cadvisor container
 cadvisor:
   image:
@@ -34,12 +34,12 @@ codeinsigtsdb:
 # codeinsigtsdb.resources -- The kubernetes resource spec for the codeinsights-db container
   resources:
     limits:
-      cpu: "2"
-      memory: 1Gi
+      cpu: 500m
+      memory: 500M
     requests:
-      cpu: "2"
-      memory: 1Gi
-    storage: 100Gi
+      cpu: 50m
+      memory: 100M
+    storage: 1Gi
 ## Values to configure the github-proxy container
 githubProxy:
 # githubProxy.repicas -- The number of github-proxy replicas
@@ -68,7 +68,7 @@ frontend:
 ## The environementr variable "SRC_GIT_SERVERS" should reflect the number of replicas set for gitserver
 ## https://docs.sourcegraph.com/admin/install/kubernetes/configure#configure-gitserver-replica-count
     - name: SRC_GIT_SERVERS
-      value: gitserver-0.gitserver:3178 gitserver-1.gitserver:3178
+      value: gitserver-0.gitserver:3178
   image:
 # frontend.image.name -- The name of the container for frontend
     name: sourcegraph/frontend
@@ -77,13 +77,13 @@ frontend:
 # frontend.resources -- The kubernetes resource spec for the frontend container
   resources:
     limits:
-      cpu: "2"
+      cpu: 500m
       ephemeral-storage: "4Gi"
-      memory: 2G
+      memory: 500M
     requests:
-      cpu: "1"
+      cpu: 100m
       ephemeral-storage: "2Gi"
-      memory: 1G
+      memory: 250M
   ingress:
 # frontend.ingress.host -- The host name for sourcegraph frontend
     host: sourcegraph.example.com
@@ -92,7 +92,7 @@ frontend:
 ## https://docs.sourcegraph.com/admin/install/kubernetes/scale
 gitserver:
 # gitserver.repicas -- The number of gitserver replicas
-  replicas: 2
+  replicas: 1
   image:
 # gitserver.image.name -- The name of the container for gitserver
     name: sourcegraph/gitserver
@@ -101,12 +101,12 @@ gitserver:
 # gitserver.resources -- The kubernetes resource spec for the gitserver container
   resources:
     limits:
-      cpu: "2"
-      memory: 4G
+      cpu: 500m
+      memory: 250M
     requests:
-      cpu: "2" 
-      memory: 4G     
-    storage: 20Gi
+      cpu: 100m
+      memory: 250M     
+    storage: 1Gi
 ## Values to override grafana service
 grafana:
 # grafana.repicas -- The number of grafana replicas
@@ -119,12 +119,12 @@ grafana:
 # grafana.resources -- The kubernetes resource spec for the grafana container
   resources:
     limits:
-      cpu: "1"
-      memory: 512Mi
-    requests:
       cpu: 100m
-      memory: 512Mi
-    storage: 2Gi
+      memory: 200M
+    requests:
+      cpu: 50m
+      memory: 250M
+    storage: 1Gi
 ## Values to configure indexed-search container
 indexedSearch:
 # indexedSearch.repicas -- The number of indexed-search replicas
@@ -132,7 +132,7 @@ indexedSearch:
 # indexedSearch.resources -- The kubernetes resource spec for the indexed-searcher container
   resources:
 ## This should typically be gitserver disk size multipled by the number of gitserver shards.   
-    storage: 100Gi
+    storage: 1Gi
   zoektwebserver:
     image:
 # indexedSearch.zoektwebserver.image.name -- The name of the container for indexed-searcher
@@ -143,11 +143,11 @@ indexedSearch:
 ## allocate enough memory to hold ~2.7x the size of all non-binary files in your repositories
     resources:
       limits:
-        cpu: "1"
-        memory: 2G
+        cpu: 500m
+        memory: 500M
       requests:
         cpu: 250m
-        memory: 1G
+        memory: 250M
   zoektindexserver:
     image:
 # indexedSearch.zoektindexserver.image.name -- The name of the container for search-indexer
@@ -158,11 +158,11 @@ indexedSearch:
 ## allocate enough memory to hold all non-binary files in your largest repository
     resources:
       limits:
-        cpu: "2"
-        memory: 2G
+        cpu: 500m
+        memory: 500M
       requests:
-        cpu: "1"
-        memory: 1G
+        cpu: 100m
+        memory: 250M
 ## Values to configure jaeger container
 jaeger:
 # jaeger.repicas -- The number of jaeger replicas
@@ -192,11 +192,11 @@ preciseCodeIntel:
 # preciseCodeIntel.resources -- The kubernetes resource spec for the precise-code-intel container
   resources:
     limits:
-      cpu: "1"
-      memory: 2G
+      cpu: 500m
+      memory: 500M
     requests:
-      cpu: 250m
-      memory: 1G
+      cpu: 100m
+      memory: 250M
 ## Values to configure prometheus service
 prometheus:
 # prometheus.repicas -- The number of prometheus replicas
@@ -209,12 +209,12 @@ prometheus:
 # prometheus.resources -- The kubernetes resource spec for the prometheus container
   resources:
     limits:
-      cpu: "1"
-      memory: 2G
+      cpu: 500m
+      memory: 500M
     requests:
-      cpu: 250m
-      memory: 2G
-    storage: 100Gi
+      cpu: 100m
+      memory: 250M
+    storage: 1Gi
 ## Values to configure query-runner container
 queryRunner:
 # queryRunner.repicas -- The number of query-runner replicas
@@ -245,7 +245,7 @@ repoUpdater:
   resources:
     limits:
       cpu: 500m
-      memory: 1Gi
+      memory: 500M
     requests:
       cpu: 500m
       memory: 250Mi
@@ -254,7 +254,7 @@ repoUpdater:
 ## https://docs.sourcegraph.com/admin/install/kubernetes/scale
 searcher:
 # searcher.repicas -- The number of searcher replicas
-  replicas: 5
+  replicas: 1
   image:
 # searcher.image.name -- The name of the container for searcher
     name: sourcegraph/searcher
@@ -264,13 +264,13 @@ searcher:
 ## CPU/memory resource allocations (allocate enough memory to hold all non-binary files in your repositories)
   resources:
     limits:
-      cpu: "2"
-      ephemeral-storage: "4Gi"
-      memory: 2G
-    requests:
       cpu: 500m
-      ephemeral-storage: "2Gi"
+      ephemeral-storage: "4Gi"
       memory: 500M
+    requests:
+      cpu: 100m
+      ephemeral-storage: "2Gi"
+      memory: 250M
 ## Values to configure symbols service
 symbols:
 # symbols.repicas -- The number of symbols replicas
@@ -283,11 +283,11 @@ symbols:
 # symbols.resources -- The kubernetes resource spec for the symbols container
   resources:
     limits:
-      cpu: "1"
+      cpu: 500m
       ephemeral-storage: "4Gi"
-      memory: 1G
+      memory: 500M
     requests:
-      cpu: 250m
+      cpu: 150m
       ephemeral-storage: "2Gi"
       memory: 250M
 ## Values to configure syntect-server container
@@ -302,11 +302,11 @@ syntectServer:
 # syntectServer.resources -- The kubernetes resource spec for the syntect-server container
   resources:
     limits:
-      cpu: "2"
-      memory: 2G
+      cpu: 500m
+      memory: 500M
     requests:
-      cpu: 250m
-      memory: 1G
+      cpu: 150m
+      memory: 250M
 ## Values to configure the jaeger-agent
 jaegerAgent:
   image:
@@ -320,13 +320,13 @@ jaegerAgent:
       cpu: 500m
       memory: 250M
     requests:
-      cpu: 100m
-      memory: 100M
+      cpu: 50m
+      memory: 50M
 # Internal services - enable if there is no external alternative
 ## Values to configure the pgsql container
 pgsql:
 # pgsql.enabled -- Enable/Disable internal frontend postgress sql container
-  enabled: false
+  enabled: true
 # pgsql.envVars -- A list of env vars (name, value maps) for the frontend container
   envVars:
     - name: PGDATABASE
@@ -344,7 +344,7 @@ pgsql:
 ## Values to configure the redis container
 redis:
 # redis.enabled -- Enable/Disable internal redis container
-  enabled: false
+  enabled: true
 # redis.envVars -- A list of env vars (name, value maps) for the frontend/repo-uploader container  
   envVars:
     - name: REDIS_CACHE_ENDPOINT 
@@ -354,7 +354,7 @@ redis:
 ## Values to configure the minio container
 minio:
 # minio.enabled -- Enable/Disable internal minio container - update the frontend/precise-code-intel envVars
-  enabled: false
+  enabled: true
 # minio.envVars -- A list of env vars (name, value maps) for the frontend/precise-code-intel container
   envVars:  
 ## To target an S3 bucket you’ve already provisioned, set the following environment variables. 
@@ -380,7 +380,7 @@ minio:
 ## Values to configure the codeintel-db container
 codeinteldb:
 # codeinteldb.enabled -- Enable/Disable internal codeinteldb postgress sql container
-  enabled: false
+  enabled: true
 # codeinteldb.envVars -- A list of env vars (name, value maps) for the frontend container
   envVars:
     - name: CODEINTEL_PGHOST
